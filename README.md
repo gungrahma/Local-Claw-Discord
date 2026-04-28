@@ -12,8 +12,8 @@ Local Claw adalah asisten AI berbasis Discord yang berjalan di dalam container D
 **Cara Instalasi :**
 
 1. Prasyarat
-•	Pastikan Docker Desktop sudah terinstal di Mac/Windows kamu.
-•	Siapkan Gemini API Key dan Discord Bot Token.
+- Pastikan Docker Desktop sudah terinstal di Mac/Windows kamu.
+- Siapkan Gemini API Key dan Discord Bot Token.
 
 2. Clone & Setup
 ```
