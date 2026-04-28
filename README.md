@@ -1,4 +1,5 @@
 **Local Claw AI Agent**
+
 Local Claw adalah asisten AI otonom berbasis Discord yang berjalan di dalam container Docker. Ditenagai oleh Gemini 2.5 Flash (dengan sistem fallback otomatis), bot ini dirancang untuk menjadi partner riset dan asisten pengembangan sistem yang aman dan efisien.
 
 **Fitur Utama :**
