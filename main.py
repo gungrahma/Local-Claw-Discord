@@ -5,6 +5,7 @@ import os
 from skills.system_tools import execute_terminal_command, baca_isi_file
 from skills.dev_tools import cek_status_server_lokal
 from skills.automation_tools import cari_folder_klien
+from skills.web_tools import cari_di_internet
 
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
@@ -13,18 +14,22 @@ list_semua_skill = [
     execute_terminal_command, 
     baca_isi_file, 
     cek_status_server_lokal, 
-    cari_folder_klien
+    cari_folder_klien,
+    cari_di_internet
 ]
 
 agent_model = genai.GenerativeModel(
     model_name='gemini-2.5-flash',
     tools=list_semua_skill,
     system_instruction="""
-    Kamu adalah Local Claw, asisten AI canggih milik Agung yang berjalan di Docker.
-    Kamu punya akses ke terminal, sistem file, dan pengecekan server lokal.
-    Gunakan 'cek_status_server_lokal' jika user bertanya tentang status port atau backend.
-    Gunakan 'cari_folder_klien' jika ditanya soal lokasi aset proyek.
-    Selalu bekerja selangkah demi selangkah. Jawab dengan santai dan solutif.
+    Kamu adalah Local Claw, asisten AI dan partner riset milik Agung.
+    
+    Tugas utamamu:
+    1. Mengeksekusi perintah sistem atau server jika diminta (gunakan tool lokal).
+    2. Menjawab pertanyaan umum, ngobrol, atau brainstorming ide.
+    3. Melakukan Riset: Jika ditanya info terbaru, tren teknologi, medis, atau data yang butuh akurasi tinggi, Wajib gunakan tool 'cari_di_internet'.
+    
+    Berikan jawaban yang rapi, komprehensif, tapi tetap menggunakan bahasa yang santai dan asyik khas teman ngobrol.
     """
 )
 
