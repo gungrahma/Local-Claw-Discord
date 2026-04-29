@@ -7,6 +7,7 @@ Local Claw adalah asisten AI berbasis Discord yang berjalan di dalam container D
 - System Control (Sandbox): Menjalankan perintah terminal, membaca file, dan mengecek status server lokal langsung dari Discord tanpa membahayakan host OS (MacBook Air).
 - Adaptive Model Fallback: Secara otomatis berpindah ke model cadangan jika terkena rate limit (Error 429), dengan tetap mempertahankan riwayat obrolan.
 - Smart Message Chunking: Menangani batasan 2000 karakter Discord dengan memecah jawaban panjang menjadi beberapa pesan berurutan.
+- Check Token and Limitation to API: Mengecek apakah request kita sudah kena API limit ataupun kita sudah send berapa token kepada API key (Contoh disini Gemini API Key)
 - Privacy First: Konfigurasi berbasis environment variables untuk menjaga keamanan API Key.
 
 **Cara Instalasi :**
