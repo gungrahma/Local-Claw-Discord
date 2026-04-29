@@ -42,6 +42,8 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
+total_token_terpakai = 0
+
 async def kirim_pesan_panjang(teks, channel):
     batas_karakter = 1900
     if len(teks) > batas_karakter:
@@ -59,6 +61,7 @@ async def on_ready():
 async def on_message(message):
     global chat_session
     global nama_model_aktif
+    global total_token_terpakai
 
     if message.author == client.user:
         return
@@ -66,10 +69,25 @@ async def on_message(message):
     if client.user in message.mentions:
         user_command = message.content.replace(f'<@{client.user.id}>', '').strip()
 
+        perintah_cek = ["cek limit", "cek token", "info kuota", "usage"]
+        if user_command.lower() in perintah_cek:
+            laporan = (
+                f"**Statistik Penggunaan Claw (Sesi Ini)**\n"
+                f"Model Aktif: `{nama_model_aktif}`\n"
+                f"Total Token Terpakai: **{total_token_terpakai}** token\n\n"
+                f"*(Info: Limit gratis Gemini Flash adalah 1 juta token per menit & 1.500 request per hari)*"
+            )
+            await message.channel.send(laporan)
+            return
+
         async with message.channel.typing():
             try:
                 response = await chat_session.send_message_async(user_command)
                 await kirim_pesan_panjang(response.text, message.channel)
+
+                if response.usage_metadata:
+                    token_sekali_jalan = response.usage_metadata.total_token_count
+                    total_token_terpakai += token_sekali_jalan
 
             except Exception as e:
                 pesan_error = str(e)
