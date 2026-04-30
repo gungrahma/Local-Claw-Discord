@@ -1,11 +1,13 @@
 import discord
 import google.generativeai as genai
 import os
+import glob
 
 from skills.system_tools import execute_terminal_command, baca_isi_file
 from skills.dev_tools import cek_status_server_lokal
 from skills.automation_tools import cari_folder_klien
 from skills.web_tools import cari_di_internet
+from skills.pdf_tools import buat_pdf_dari_teks
 
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
@@ -15,7 +17,8 @@ list_semua_skill = [
     baca_isi_file, 
     cek_status_server_lokal, 
     cari_folder_klien,
-    cari_di_internet
+    cari_di_internet,
+    buat_pdf_dari_teks
 ]
 
 instruksi_sistem = """
@@ -25,6 +28,7 @@ Tugas utamamu:
 1. Mengeksekusi perintah sistem atau server jika diminta (gunakan tool lokal).
 2. Menjawab pertanyaan umum, ngobrol, atau brainstorming ide.
 3. Melakukan Riset: Jika ditanya info terbaru, tren teknologi, medis, atau data yang butuh akurasi tinggi, Wajib gunakan tool 'cari_di_internet'.
+4. Membuat Dokumen: Jika Agung memintamu merangkum riset ke dalam file atau mengekspor teks ke PDF, gunakan tool 'buat_pdf_dari_teks.
 
 Berikan jawaban yang rapi, komprehensif, tapi tetap menggunakan bahasa yang santai dan asyik khas teman ngobrol.
 """
@@ -83,8 +87,35 @@ async def on_message(message):
         async with message.channel.typing():
             try:
                 response = await chat_session.send_message_async(user_command)
-                await kirim_pesan_panjang(response.text, message.channel)
 
+                if response.usage_metadata:
+                    total_token_terpakai += response.usage_metadata.total_token_count
+
+                    await kirim_pesan_panjang(response.text, message.channel)
+
+                import glob
+                import os
+                
+                file_pdf_ditemukan = glob.glob("*.pdf")
+                
+                if file_pdf_ditemukan:
+                    file_terbaru = max(file_pdf_ditemukan, key=os.path.getctime)
+                    
+                    async with message.channel.typing():
+                        try:
+                            with open(file_terbaru, 'rb') as f:
+                                dokumen_discord = discord.File(f, filename=file_terbaru)
+                                await message.channel.send(
+                                    content=f"Ini dokumennya ya!", 
+                                    file=dokumen_discord
+                                )
+                            
+                            os.remove(file_terbaru)
+                            print(f"File {file_terbaru} berhasil dikirim dan dihapus dari container.")
+                            
+                        except Exception as e_upload:
+                            await message.channel.send(f"Gagal mengunggah file: {str(e_upload)}")
+    
                 if response.usage_metadata:
                     token_sekali_jalan = response.usage_metadata.total_token_count
                     total_token_terpakai += token_sekali_jalan
