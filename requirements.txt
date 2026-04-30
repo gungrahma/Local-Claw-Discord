@@ -2,3 +2,4 @@ google-generativeai
 discord.py
 requests
 duckduckgo-search
+fpdf2
